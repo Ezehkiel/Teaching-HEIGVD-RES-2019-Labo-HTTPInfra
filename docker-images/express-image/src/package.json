@@ -1,0 +1,14 @@
+{
+  "name": "students",
+  "version": "0.1.0",
+  "description": "Labs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Monthoux, Poulard",
+  "license": "ISC",
+  "dependencies": {
+    "chance": "^1.0.18"
+  }
+}
