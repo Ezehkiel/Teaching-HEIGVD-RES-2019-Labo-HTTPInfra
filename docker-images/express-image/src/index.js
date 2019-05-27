@@ -5,26 +5,30 @@ var express = require('express')
 var app = express();
 
 app.get('/', function(req, res){
-	res.send(generateStudents());
+	res.send(generateAnimals());
 });
 
 app.listen(3000, function(){
 	console.log('Accepting HTTP requests on port 3000.');
 });
 
-function generateStudents(){
-	var numberOfStudents = chance.integer({
+function generateAnimals(){
+	var numberOfAnimals = chance.integer({
 		min: 0,
 		max: 10
 	});
-	var students= [];
-	for (var i = 0; i < numberOfStudents; ++i){
+	var animals= [];
+	for (var i = 0; i < numberOfAnimals; ++i){
 		var gender= chance.gender();
+		var animal= chance.animal();
+		var country= chance.country({ full: true });
 		var birthYear = chance.year({
-			min: 1986,
-			max: 1996
+			min: 2010,
+			max: 2019
 		});
-		students.push({
+		animals.push({
+			typeAnimals: animal,
+			country: country,
 			firstName: chance.first({
 				gender: gender
 			}),
@@ -35,5 +39,6 @@ function generateStudents(){
 			})
 		});
 	};
-	return students;
+	console.log(animals);
+	return animals;
 }
