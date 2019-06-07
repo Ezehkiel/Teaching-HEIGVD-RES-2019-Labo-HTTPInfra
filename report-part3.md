@@ -9,11 +9,11 @@ typora-root-url: images
 2. Lancement des deux containaires (httpd et node) en leur donnant un nom pour pouvoir les identifier plus facilement.
 
    ```bash
-    $ docker run -d --name apache_static res/apache_step1
+    $ docker run -d --name static res/static_app1
    ```
 
    ```bash
-    $ docker run -d --name express_dynamic res/express_step2b
+    $ docker run -d --name dynamic res/dynamic_app
    ```
 
 3. Récuperation des adresses IP des deuc containaires avec la commande `docker inspect <nom_du_container | grep IPAddress`
@@ -38,7 +38,7 @@ typora-root-url: images
 
    On obtien les bonne réponse donc tout est correct.
 
-6. Création du dossier `reverse-proxy` dans le dossier `docker-images`
+6. Création du dossier `reverse-image` dans le dossier `docker-images`
 
 7. Creation du `Dockerfile` dans le dossier précédemment créé avec la commande
 
@@ -69,7 +69,7 @@ typora-root-url: images
    </VirtualHost>
    ```
 
-10. Création de l'image a l'aide de la commande `$ docker build -t res/apache_reverse_proxy .`
+10. Création de l'image a l'aide de la commande `$ docker build -t res/reverse_app .`
 
 11. AJout d'une entrée dans le fichier `/etc/hosts` afin de résoudre notre nom DNS
 
@@ -78,9 +78,9 @@ typora-root-url: images
 12. Lancement de tous le containaires (il faut faire attention a l'ordre avec le quel on lance les contenaire car nous avons renseigné les adresses ip en dur dans le fichier de conf)
 
     ```bash
-    $ docker run -d --name apache_static res/apache_step1
-    $ docker run -d --name express_dynamic res/express_step2b
-    $ docker run -d -p 8080:80 --name reverse_proxy res/apache_reverse_proxy
+    $ docker run -d --name static res/static_app
+    $ docker run -d --name dynamic res/dynamic_app
+    $ docker run -d -p 8080:80 --name reverse res/reverse_app
     ```
 
 13. Nous testons et nous pouvons voir que si nous utilisons notre navigateur nous avons bien la redirection qui est effectué:
