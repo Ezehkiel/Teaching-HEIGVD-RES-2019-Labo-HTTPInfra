@@ -13,6 +13,7 @@ echo "Setup for the RES lab..."
 echo "Static app URL: $STATIC_APP"
 echo "Dynamic app URL: $DYNAMIC_APP"
 
+php /var/apache2/templates/config-template.php > /etc/apache2/sites-available/001-reverse-proxy.conf
 
 : "${APACHE_CONFDIR:=/etc/apache2}"
 : "${APACHE_ENVVARS:=$APACHE_CONFDIR/envvars}"

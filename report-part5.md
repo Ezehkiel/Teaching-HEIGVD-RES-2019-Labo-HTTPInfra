@@ -83,5 +83,95 @@
    RUN a2ensite 000-* 001-*
    ```
 
-4. 
+4. Ensuite il faut construire  l'image avec cette commande: `$ docker build -t res/reverse_app .` 
+
+5. Pour tester il suffit de lancer un conteneur en lui passant des variables d'environnement. Cela ce fait comme ceci:
+
+   ```bash
+   $ docker run -e STATIC_APP=172.17.0.2:80 -e DYNAMIC_APP=172.17.0.3:3000 res/reverse_app
+   ```
+
+6. Création d'un dossier "templates" dans le dosser "reverse-image"
+
+7. Création d'un fichier `config-template.php` dans le dossier templates. Ce dernier contient ceci:
+
+   ```php
+   <?php
+     $dynamic_app = getenv('DYNAMIC_APP');
+     $static_app = getenv('STATIC_APP');
+   ?>
+   <VirtualHost *:80>
+     ServerName labo.res.ch
+   
+   
+     ProxyPass '/api/animals/' 'http://<?php print "$dynamic_app"?>/'
+     ProxyPassReverse 'api/animals/' 'http://<?php print "$dynamic_app"?>/'
+   
+     ProxyPass '/' 'http://<?php print "$static_app"?>/'
+     ProxyPassReverse '/ 'http://<?php print "$static_app"?>/'
+   
+   </VirtualHost>
+   ```
+
+8. Pour tester le fichier `config-template.php` il faut creer des variables d'environnement. Comme ceci
+
+   ```bash
+   export STATIC_APP=172.17.0.2
+   export DYNAMIC_APP=172.17.0.3
+   ```
+
+   Puis il faut avoir php installé sur sa machine. Pour test il suffit de faire 
+
+   ```bash
+   $ php config-template.php
+   ```
+
+   Le résultat doit être le suivant (en fonction des variables d'environnement précédemment entré)
+
+   ```
+   <VirtualHost *:80>
+     ServerName labo.res.ch
+   
+   
+     ProxyPass '/api/animals/' 'http://172.17.0.3/'
+     ProxyPassReverse 'api/animals/' 'http://172.17.0.3/'
+   
+     ProxyPass '/' 'http://172.17.0.2/'
+     ProxyPassReverse '/ 'http://172.17.0.2/'
+   
+   </VirtualHost>
+   ```
+
+9. Il faut ensuite modifier le fichier `apache2-foreground` en lui ajoutant cette ligne en dessous des 3 `echo` précédemment rentrés.
+
+   ```
+   php /var/apache2/templates/config-template.php > /etc/apache2/sites-available/001-reverse-proxy.conf
+   ```
+
+10. Pour tester il faut faire les étapes suivantes en étant dans le dossier `docker-images`:
+
+    ```bash
+    cd reverse-image/
+    docker build -t res/reverse_app .
+    cd ../static-image/
+    docker build -t res/static_app .
+    cd ../dynamic-image/
+    docker build -t res/dynamic_app .
+    docker run -d res/static_app
+    docker run -d res/static_app
+    docker run -d res/static_app
+    docker run -d res/static_app
+    docker run -d res/static_app
+    docker run -d --name static res/static_app
+    docker run -d res/dynamic_app
+    docker run -d res/dynamic_app
+    docker run -d res/dynamic_app
+    docker run -d res/dynamic_app
+    docker run -d --name dynamic res/dynamic_app
+    docker inspect static | grep -i ipaddress
+    docker inspect dynamic | grep -i ipaddress
+    docker run -d -e STATIC_APP=172.17.0.7:80 -e DYNAMIC_APP=172.17.0.12:3000 --name reverse -p 8080:80 res/reverse_app
+    ```
+
+    Une fois que ces commandes sont exécutées, il faut ouvrir son navigateur internet et aller sur : `labo.res.ch:8080` et nous avons notre page avec les changements qui sont effectués.
 
