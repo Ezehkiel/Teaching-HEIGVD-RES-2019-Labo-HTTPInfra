@@ -1,7 +1,7 @@
 ## Step 2: Dynamic HTTP server with express.js
 
 1. Création d'une branche fb-express-dynamic
-2. Création du dossier express-image dans le dossier "docker-images"
+2. Création du dossier dynamic-image dans le dossier "docker-images"
 3. Création d'un Dockerfile avec le contenu :
 
 ```bash
@@ -30,7 +30,6 @@ CMD ["node", "/opt/app/index.js"]
 ```
 
 5. Ajout de la dépendance Chance avec la commande `npm install --save chance`
-
 6. Ajout de la dépendence Express avec la commande `npm install --save express`
 7. Création du fichier index.js :
 
@@ -83,8 +82,8 @@ function generateAnimals(){
 
 7. Construction de l'image docker avec la commande :
 
-`docker build -t res/express_step2 .`
+`docker build -t res/dynamic_app .`
 
 8. Test de l'image avec la commande :
 
-`docker run res/express_step2`
+`docker run res/dynamic_app`
