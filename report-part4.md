@@ -9,16 +9,16 @@
 3. Relancer les 3 conteneurs (dans l'ordre)
 
    ```bash
-   $ docker run -d --name apache_static res/apache_step1
-   $ docker run -d --name express_dynamic res/express_step2b
-   $ docker run -d -p 8080:80 --name reverse_proxy res/apache_reverse_proxy
+   $ docker run -d --name static res/static_app
+   $ docker run -d --name dynamic res/dynamic_app
+   $ docker run -d -p 8080:80 --name reverse res/reverse_app
    ```
 
 4. Verifier que `vim` est installé sur les 3 conteneur. Pour cela il faut se connecter sur chaque conteneur à l'aide de la commande `docker exec -it <nomConteneur> /bin/bash` puis une fois sur la machine faite un `vim test`, si vim s'ouvre c'est qu'il est installé correctement.
 
 5. Arreter les 3 conteneurs et les supprimer
 
-6. Créer un fichier `animals.js` dans le dossier `docker-images/apache-step1/src/js` et y ajouter le code suivant:
+6. Créer un fichier `animals.js` dans le dossier `docker-images/static-image/src/js` et y ajouter le code suivant:
 
    ```
     $(function() {
@@ -44,4 +44,4 @@
    });
    ```
 
-   Puis dans le fichier `index.html` qui se trouve `docker-images/apache-step1/src` il faut ajouter la ligne `<script src="js/animals.js"></script>` en bas du fichier. Nous avons aussi ajouté un id à la balise ou nos animaux seront ajoutés.
+   Puis dans le fichier `index.html` qui se trouve dans `docker-images/static-image/src` il faut ajouter la ligne `<script src="js/animals.js"></script>` en bas du fichier. Nous avons aussi ajouté un id à la balise ou nos animaux seront ajoutés.
