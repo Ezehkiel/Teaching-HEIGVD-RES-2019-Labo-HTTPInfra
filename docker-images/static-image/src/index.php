@@ -70,6 +70,11 @@
 
 <!-- Custom scripts for this template -->
 <script src="js/animals.js"></script>
+
+<script type="text/javascript">
+    var ip = "<?php echo $_SERVER['SERVER_ADDR']; ?>";
+        alert(ip);
+</script>
 </body>
 
 </html>

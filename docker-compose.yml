@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  reverse-proxy:
+    image: traefik # The official Traefik docker image
+    container_name: reverse
+    restart: always
+    command: --api --docker # Enables the web UI and tells Traefik to listen to docker
+    ports:
+      - "80:80"     # The HTTP port
+      - "443:443"
+      - "8080:8080" # The Web UI (enabled by --api)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
+      - ./traefik.toml:/traefik.toml
+      - ~/data/traefik/acme.json:/acme.json
+    networks:
+      - web
+
+  apache_static:
+    image: res/static_app
+    build:
+      context: ./docker-images/static-image
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.frontend.rule=Host:labo.res.ch"
+      - "traefik.docker.network=web"
+      - "traefik.port=80"
+    expose:
+      - "80"
+    networks:
+      - web
+
+  express_dynamic:
+    image: res/dynamic_app
+    build:
+      context: ./docker-images/dynamic-image
+      dockerfile: Dockerfile
+    labels:
+      - "traefik.frontend.rule=Host:labo.res.ch; PathPrefixStrip:/api/animals"
+      - "traefik.docker.network=web"
+      - "traefik.port=3000"
+    expose:
+      - "3000"
+    networks:
+      - web
+
+    
+networks:
+  web:
+    external: true

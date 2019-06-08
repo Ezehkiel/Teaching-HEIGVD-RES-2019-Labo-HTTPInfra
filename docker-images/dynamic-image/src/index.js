@@ -1,10 +1,12 @@
 var Chance = require('chance');
 var chance = new Chance();
-
+var ip = require("ip");
 var express = require('express')
 var app = express();
 
 app.get('/', function(req, res){
+        console.log("Hi, i'm server: ");
+        console.log(ip.address());
 	res.send(generateAnimals());
 });
 
@@ -13,9 +15,9 @@ app.listen(3000, function(){
 });
 
 function generateAnimals(){
-	var numberOfAnimals = chance.integer({
+        var numberOfAnimals = chance.integer({
 		min: 0,
-		max: 10
+		max: 5
 	});
 	var animals= [];
 	for (var i = 0; i < numberOfAnimals; ++i){
@@ -39,6 +41,5 @@ function generateAnimals(){
 			})
 		});
 	};
-	console.log(animals);
 	return animals;
 }
