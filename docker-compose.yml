@@ -26,6 +26,7 @@ services:
       - "traefik.frontend.rule=Host:labo.res.ch"
       - "traefik.docker.network=web"
       - "traefik.port=80"
+      - "traefik.backend.loadbalancer.sticky=true"
     expose:
       - "80"
     networks:
