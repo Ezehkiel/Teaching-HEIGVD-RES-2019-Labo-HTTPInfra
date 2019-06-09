@@ -6,7 +6,7 @@ var app = express();
 
 app.get('/', function(req, res){
         console.log("Hi, i'm server: ");
-        console.log(ip.address());
+        console.log(ip.address() + " " + Date.now());
 	res.send(generateAnimals());
 });
 
