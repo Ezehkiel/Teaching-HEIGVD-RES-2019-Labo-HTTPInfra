@@ -93,7 +93,7 @@
    Une fois le fichier modifié, il suffit de lancer la commande suivante :
 
    ```bash
-$ docker-compose up -d
+   $ docker-compose up -d
    ```
 
    Cette dernière va lancer un conteneur pour chaque service. 
