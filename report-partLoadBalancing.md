@@ -69,19 +69,19 @@
    Pour le conteneur statique, ajouter ceci au fichier `docker-images/static-image/src/index.html` :
    
    ```php+HTML
-<script type="text/javascript">
+   <script type="text/javascript">
        var ip = "<?php echo $_SERVER['SERVER_ADDR']; ?>";
         alert(ip);
    </script>
-```
+   ```
    
-Puis, renommer le fichier `docker-images/static-image/src/index.html` en `docker-images/static-image/src/index.php`
+   Puis, renommer le fichier `docker-images/static-image/src/index.html` en `docker-images/static-image/src/index.php`
    
    Pour le conteneur dynamique, ajouter un paquet "npm". Pour cela, il faut se rendre dans le dossier `docker-images/dynamic-image/src` puis faire la commande :
    
-```bash
+   ```bash
    $ npm install --save ip
-```
+   ```
    
    Aller ensuite modifier le fichier `index.js`pour qu'il soit comme ceci :
    
