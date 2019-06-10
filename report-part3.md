@@ -1,30 +1,30 @@
----
-typora-root-url: images
----
-
 ## Step 3: Reverse proxy with apache (static configuration)
 
-1. Creation d'une branche fb-reverse-proxy
+1. Créer une branche `fb-reverse-proxy`
 
-2. Lancement des deux containaires (httpd et node) en leur donnant un nom pour pouvoir les identifier plus facilement.
+2. Lancer les deux conteneurs (httpd et node) en leur donnant un nom permettant de les identifier facilement :
 
    ```bash
-    $ docker run -d --name static res/static_app1
+    $ docker run -d --name static res/static_app
    ```
 
    ```bash
     $ docker run -d --name dynamic res/dynamic_app
    ```
 
-3. Récuperation des adresses IP des deuc containaires avec la commande `docker inspect <nom_du_container | grep IPAddress`
+3. Récupérer les adresses IP des deux conteneurs avec la commande : 
 
-4. Connexion a `docker-machine` avec la commande 
+   ```bash
+   $ docker inspect <nom_du_container | grep IPAddress
+   ```
+
+4. Se connecter à `docker-machine` avec la commande :
 
    ```bash
    $ docker-machine ssh
    ```
 
-5. Vérification que les container fonctionnent bien. 
+5. Vérifier que les conteneurs fonctionnent bien avec les commandes : 
 
    ```bash
    $ telnet 172.17.0.2 80
@@ -36,46 +36,71 @@ typora-root-url: images
    GET / HTTP/1.0
    ```
 
-   On obtien les bonne réponse donc tout est correct.
+   Si les réponses obtenues sont les suivantes, c'est que tout s'est bien passé.
 
-6. Création du dossier `reverse-image` dans le dossier `docker-images`
+   ![telnetDynamic](./images/telnetDynamic.png)
 
-7. Creation du `Dockerfile` dans le dossier précédemment créé avec la commande
+   ![telnetStatic](./images/telnetStatic.png)
 
-8. Creation d'un dossier `conf/sites-available`
+6. Créer le dossier `/docker-images/reverse-image`
 
-9. Création des deux fichier de config
+7. Se rendre dans le dossier `reverse-image`
 
-   000-default.conf
-
-   ```bash
-   <VirtualHost *:80>
-   </VirtualHost>
-   ```
-
-   001-reverse-proxy.conf
+8. Créer un `Dockerfile` selon le modèle suivant :
 
    ```bash
-   <VirtualHost *:80>
-     ServerName labo.res.ch
+   FROM php:7.2-apache
    
+   COPY conf/ /etc/apache2
    
-     ProxyPass "/api/animals/" "http://172.17.0.3:3000/"
-     ProxyPassReverse "api/animals/" "http://172.17.0.3:3000/"
-   
-     ProxyPass "/" "http://172.17.0.2:80/"
-     ProxyPassReverse "/" "http://172.17.0.2:80/"
-   
-   </VirtualHost>
+   RUN a2enmod proxy proxy_http
+   RUN a2ensite 000-* 001-*
    ```
 
-10. Création de l'image a l'aide de la commande `$ docker build -t res/reverse_app .`
+9. Créer les dossiers `/docker-images/reverse-image/conf/sites-available`
 
-11. AJout d'une entrée dans le fichier `/etc/hosts` afin de résoudre notre nom DNS
+10. Se rendre dans le dossier `sites-available`
 
-    `192.168.99.100	labo.res.ch`
+11. Créer les deux fichiers de configuration suivants :
 
-12. Lancement de tous le containaires (il faut faire attention a l'ordre avec le quel on lance les contenaire car nous avons renseigné les adresses ip en dur dans le fichier de conf)
+    * 000-default.conf
+
+    ```bash
+    <VirtualHost *:80>
+    </VirtualHost>
+    ```
+
+    * 001-reverse-proxy.conf
+
+    ```bash
+    <VirtualHost *:80>
+      ServerName labo.res.ch
+    
+    
+      ProxyPass "/api/animals/" "http://172.17.0.3:3000/"
+      ProxyPassReverse "api/animals/" "http://172.17.0.3:3000/"
+    
+      ProxyPass "/" "http://172.17.0.2:80/"
+      ProxyPassReverse "/" "http://172.17.0.2:80/"
+    
+    </VirtualHost>
+    ```
+
+12. Revenir dans le dossier `/docker-images/reverse-image/`
+
+13. Créer l'image Docker suivante :
+
+    ```bash
+    $ docker build -t res/reverse_app .
+    ```
+
+14. Ajouter une entrée dans le fichier `hosts` de l'ordinateur afin de résoudre notre nom DNS :
+
+    ```bash
+    192.168.99.100	labo.res.ch
+    ```
+
+15. Lancer tous les conteneurs en prêtant attention à l'ordre de démarrage :
 
     ```bash
     $ docker run -d --name static res/static_app
@@ -83,11 +108,25 @@ typora-root-url: images
     $ docker run -d -p 8080:80 --name reverse res/reverse_app
     ```
 
-13. Nous testons et nous pouvons voir que si nous utilisons notre navigateur nous avons bien la redirection qui est effectué:
+16. Tester en tapant le lien suivant dans le navigateur :
 
-    ![reverse_proxy_static](/reverse_proxy_static.png)
+    ```bash
+    labo.res.ch:8080
+    ```
+
+    Si tout va bien, le site devrait apparaître comme suit :
+
+    ![reverse_proxy_static](./images/reverse_proxy_static.png)
 
     
 
-    ![reverse_proxy_express](/reverse_proxy_express.png)
+    Nous pouvons également tester le lien suivant pour visualiser les messages JSON :
+
+    ```bash
+    labo.res.ch:8080/api/animals
+    ```
+
+    
+
+    ![reverse_proxy_express](./images/reverse_proxy_express.png)
 
