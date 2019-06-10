@@ -73,7 +73,7 @@
    <script src="js/animals.js"></script>
    ```
 
-   Nous avons également ajouté un ID à la balise dans laquelle nos animaux seront ajoutés. Le nom de la balise doit être `customContent` afin de correspondre au nom se trouvant dans `animal.js`.
+   Nous avons également ajouté un ID à la balise dans laquelle nos animaux seront ajoutés. Le nom de la balise doit être `customContent` afin de correspondre au nom se trouvant dans `animals.js`.
    
 8. Il faut ensuite reconstruire l'image. Se rendre dans le dossier `docker-images/static-image` puis effectuer la commande : 
 
