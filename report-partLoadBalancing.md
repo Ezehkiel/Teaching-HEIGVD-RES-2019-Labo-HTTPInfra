@@ -64,7 +64,85 @@
    $ docker network create web
    ```
 
-4. Lancer un test avec la commande :
+4. Afin de montrer le load balancing en action, nous allons faire en sorte que les conteneurs statiques et dynamiques nous montrent leurs adresses IP. 
+
+   Pour le conteneur statique, ajouter ceci au fichier `docker-images/static-image/src/index.html` :
+   
+   ```php+HTML
+   <script type="text/javascript">
+       var ip = "<?php echo $_SERVER['SERVER_ADDR']; ?>";
+        alert(ip);
+   </script>
+   ```
+   
+   Puis, renommer le fichier `docker-images/static-image/src/index.html` en `docker-images/static-image/src/index.php`
+   
+   Pour le conteneur dynamique, ajouter un paquet "npm". Pour cela, il faut se rendre dans le dossier `docker-images/dynamic-image/src` puis faire la commande :
+   
+   ```bash
+   $ npm install --save ip
+   ```
+   
+   Aller ensuite modifier le fichier `index.js`pour qu'il soit comme ceci :
+   
+   ```js
+   var Chance = require('chance');
+   var chance = new Chance();
+   var ip = require("ip");
+   var express = require('express')
+   var app = express();
+   
+   app.get('/', function(req, res){
+           console.log("Hi, i'm server: ");
+           console.log(ip.address() + " " + Date.now());
+           res.send(generateAnimals());
+   });
+   
+   app.listen(3000, function(){
+           console.log('Accepting HTTP requests on port 3000.');
+   });
+   
+   function generateAnimals(){
+           var numberOfAnimals = chance.integer({
+                   min: 0,
+                   max: 5
+           });
+           var animals= [];
+           for (var i = 0; i < numberOfAnimals; ++i){
+                   var gender= chance.gender();
+                   var animal= chance.animal();
+                   var country= chance.country({ full: true });
+                   var birthYear = chance.year({
+                           min: 2010,
+                           max: 2019
+                   });
+                   animals.push({
+                           typeAnimals: animal,
+                           country: country,
+                           firstName: chance.first({
+                                   gender: gender
+                           }),
+                           lastName: chance.last(),
+                           gender: gender,
+                           birthday: chance.birthday({
+                                   year: birthYear
+                           })
+                   });
+           };
+           return animals;
+   }
+   ```
+   
+   Une fois ces étapes réalisées, reconstruire les images :
+   
+   ```bash
+   $ cd docker-images/static-image
+   $ docker build -t res/static_app .
+   $ cd ../dynamic-image
+   $ docker build -t res/dynamic_app .
+   ```
+   
+5. Lancer un test avec la commande :
 
    ```bash
    $ docker-compose up -d --scale apache_static=4 --scale express_dynamic=4
