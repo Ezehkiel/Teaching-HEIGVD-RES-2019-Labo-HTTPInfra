@@ -77,6 +77,7 @@
    RUN apt-get update && apt-get install -y vim
    
    COPY apache2-foreground /usr/local/bin
+   COPY templates /var/apache2/templates
    
    COPY conf/ /etc/apache2
    
@@ -142,7 +143,7 @@
      ProxyPassReverse 'api/animals/' 'http://172.17.0.3/'
    
      ProxyPass '/' 'http://172.17.0.2/'
-     ProxyPassReverse '/ 'http://172.17.0.2/'
+     ProxyPassReverse '/' 'http://172.17.0.2/'
    
    </VirtualHost>
    ```
@@ -156,29 +157,31 @@
 10. Tester en suivant les étapes suivantes, tout en étant dans le dossier `docker-images` :
 
     ```bash
-    cd reverse-image/
-    docker build -t res/reverse_app .
-    cd ../static-image/
-    docker build -t res/static_app .
-    cd ../dynamic-image/
-    docker build -t res/dynamic_app .
-    docker run -d res/static_app
-    docker run -d res/static_app
-    docker run -d res/static_app
-    docker run -d res/static_app
-    docker run -d res/static_app
-    docker run -d --name static res/static_app
-    docker run -d res/dynamic_app
-    docker run -d res/dynamic_app
-    docker run -d res/dynamic_app
-    docker run -d res/dynamic_app
-    docker run -d --name dynamic res/dynamic_app
-    docker inspect static | grep -i ipaddress
-    docker inspect dynamic | grep -i ipaddress
-    docker run -d -e STATIC_APP=172.17.0.7:80 -e DYNAMIC_APP=172.17.0.12:3000 --name reverse -p 8080:80 res/reverse_app
+    $ cd reverse-image/
+    $ docker build -t res/reverse_app .
+    $ cd ../static-image/
+    $ docker build -t res/static_app .
+    $ cd ../dynamic-image/
+    $ docker build -t res/dynamic_app .
+    $ docker run -d res/static_app
+    $ docker run -d res/static_app
+    $ docker run -d res/static_app
+    $ docker run -d res/static_app
+    $ docker run -d res/static_app
+    $ docker run -d --name static res/static_app
+    $ docker run -d res/dynamic_app
+    $ docker run -d res/dynamic_app
+    $ docker run -d res/dynamic_app
+    $ docker run -d res/dynamic_app
+    $ docker run -d --name dynamic res/dynamic_app
+    $ docker inspect static | grep -i ipaddress
+    $ docker inspect dynamic | grep -i ipaddress
+    $ docker run -d -e STATIC_APP=172.17.0.7:80 -e DYNAMIC_APP=172.17.0.12:3000 --name reverse -p 8080:80 res/reverse_app
     ```
 
-    Une fois ces commandes sont exécutées, ouvrir un navigateur internet et se rendre sur le lien suivant : 
+    Une fois ces commandes exécutées, ouvrir un navigateur internet et se rendre sur le lien suivant : 
 
     <http://labo.res.ch:8080/>
+    
+    Nous devrions avoir notre page statique avec les noms des animaux comme pour la partie précédente. 
 

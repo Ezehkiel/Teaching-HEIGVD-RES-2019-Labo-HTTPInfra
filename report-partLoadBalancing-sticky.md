@@ -2,7 +2,7 @@
 
 1. Créer une branche `fb-loadbalancing-sticky`
 
-2. Ajouter la ligne `traefik.backend.loadbalancer.sticky=true` dans les labels du conteneur voulu :
+2. Ajouter la ligne `traefik.backend.loadbalancer.sticky=true` dans les labels du conteneur voulu, dans notre cas c'est pour les conteneurs statiques :
 
    ```
    version: '3'
@@ -62,19 +62,19 @@
 3. Lancer un test avec la commande :
 
    ```bash
-$ docker-compose up -d --scale apache_static=4 --scale express_dynamic=4
+   $ docker-compose up -d --scale apache_static=4 --scale express_dynamic=4
    ```
-   
+
    Cette commande lance 4 conteneurs statiques, 4 conteneurs dynamiques et le reverse proxy géré par traefik. 
 
    En se rendant sur la page du [conteneur statique](http://labo.res.ch/), nous recevons une alerte nous indiquant sur quel serveur statique on a effectué la requête. Dans cette configuration, même après un rafraîchissement de la page, nous aurons toujours la même adresse IP. Par contre, si nous changeons de navigateur, nous allons voir une nouvelle adresse IP.
 
    Pour tester le *load balancing* des nœuds express, taper la commande suivante : 
-   
+
    ```bash
    $ docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_1 | sed -e 's/^/[-- 1 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_2 | sed -e 's/^/[-- 2 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_3 | sed -e 's/^/[-- 3 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_4 | sed -e 's/^/[-- 4 --]/'
    ```
-   
+
    Ici, il faut remplacer le nom `teachingheigvdres2019labohttpinfra_express_dynamic_x` par le nom de chaque conteneur. Cela va afficher les informations suivantes, qui vont se mettre à jour à chaque  requête ajax faite aux nœuds.
-   
+
    ![loadbalancing_express](./images/loadbalancing_express.png)

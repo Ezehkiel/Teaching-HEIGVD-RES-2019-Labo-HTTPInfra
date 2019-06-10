@@ -67,10 +67,28 @@
    });
    ```
 
-7. Enfin, dans le fichier `docker-images/static-image/src/index.html`, ajouter la ligne suivante à la fin du fichier :
+7. Dans le fichier `docker-images/static-image/src/index.html`, ajouter la ligne suivante à la fin du fichier :
 
    ```html
    <script src="js/animals.js"></script>
    ```
 
    Nous avons également ajouté un ID à la balise dans laquelle nos animaux seront ajoutés. Le nom de la balise doit être `customContent` afin de correspondre au nom se trouvant dans `animal.js`.
+   
+8. Il faut ensuite reconstruire l'image. Se rendre dans le dossier `docker-images/static-image` puis effectuer la commande : 
+
+   ```bash
+   $ docker build -t res/static_app .
+   ```
+
+9. Puis, pour tester ce qui a été fait, il faut démarrer les conteneurs dans l'ordre suivant:
+
+   ```bash
+   $ docker run -d --name static res/static_app
+   $ docker run -d --name dynamic res/dynamic_app
+   $ docker run -d -p 8080:80 --name reverse res/reverse_app
+   ```
+
+   Enfin, se rendre sur la page [statique](http://labo.res.ch:8080). Le résultat doit être notre page statique avec des noms d'animaux qui changent toutes les 5 secondes.
+
+   ![ajax](./images/ajax.png)

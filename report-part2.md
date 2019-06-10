@@ -69,7 +69,7 @@
    function generateAnimals(){
    	var numberOfAnimals = chance.integer({
    		min: 0,
-   		max: 10
+   		max: 5
    	});
    	var animals= [];
    	for (var i = 0; i < numberOfAnimals; ++i){
