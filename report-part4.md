@@ -54,7 +54,7 @@
             var message ="";
             if( animals.length > 0){
               for( var i = 0; i < animals.length ; ++i){
-                message += "<p>" + animals[i].firstName + " who is a " + 								animals[i].typeAnimals + "</p>";
+                message += "<p>" + animals[i].firstName + " who is a " + animals[i].typeAnimals + "</p>";
               }
             }else{
               message = "No animals are there";
