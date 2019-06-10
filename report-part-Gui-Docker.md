@@ -1,8 +1,8 @@
 # Management UI (0.5 pt)
 
-1. Création d'une branche `fb-docker-gui`
+1. Créer une branche `fb-docker-gui`
 
-2. Nous allons utiliser [Portainer](<https://www.portainer.io/>) pour gérer nos conteneurs Docker. Pour faire ceci de manière simplifié nous allons ajouter un paragraphe dans le fichier `docker-compose.yml` : 
+2. Nous allons utiliser [Portainer](<https://www.portainer.io/>) pour gérer nos conteneurs Docker. Pour faire ceci de manière simplifiée nous ajoutons un paragraphe dans le fichier `docker-compose.yml` situé à la racine du projet : 
 
    ```
    portainer:
@@ -18,7 +18,7 @@
        - web
    ```
 
-   Le fichier doit donc contenir ceci:
+   Le fichier dans sa totalité ressemble à ceci :
 
    ```
    version: '3'
@@ -90,11 +90,19 @@
        external: true
    ```
 
-   Une fois le fichier modifier il suffit de faire un `docker-compose up -d`, il va lancer un conteneur de chaque service. Une fois cette commande faite il est possible de se rendre sur [la page web du conteneur portainer](http://labo.res.ch:9000/#/home). Il faut renseigner un nom d'utilisateur ainsi qu'un mot de passe. Il faut ensuite sélectionner un "endpoint", il faut alors sélectionner "local". 
+   Une fois le fichier modifié, il suffit de lancer la commande suivante :
 
-   Il est aussi possible d'aller [sur la page de traefik](<http://labo.res.ch:8080/dashboard/>) qui s'occupe du reverse proxy.
+   ```bash
+$ docker-compose up -d
+   ```
 
-   Puis nous avons notre page web qui se trouve [ici](http://labo.res.ch)
-
-   Il est ensuite possible de gérer ses conteneur depuis Portainer. Il est possible de voir les logs des conteneur et donc de pouvoir voir le loadbalancing en action en allant sur le logs des conteneurs dynamiques car ils affichent le timestamp de la requêtes.
+   Cette dernière va lancer un conteneur pour chaque service. 
+   
+   Une fois cela fait, il est possible de se rendre sur [la page web du conteneur portainer](http://labo.res.ch:9000/#/home). Renseigner un nom d'utilisateur ainsi qu'un mot de passe puis sélectionner l'endpoint appelé `local`.
+   
+   Il est également possible de se rendre sur la page de [traefik](<http://labo.res.ch:8080/dashboard/>), qui s'occupe du reverse proxy.
+   
+   La page web de notre conteneur statique se trouve [à ce lien](http://labo.res.ch).
+   
+   Nous pouvons à présent gérer nos conteneurs depuis Portainer. A l'aide de cet outil, nous pouvons visualiser les logs des conteneurs et, donc, pouvons constater le *load balancing* en action en se rendant simplement sur les logs des conteneurs dynamiques. En effet, ils affichent le timestamp de la requête reçue en temps réel.
 

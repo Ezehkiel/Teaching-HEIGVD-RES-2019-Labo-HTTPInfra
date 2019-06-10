@@ -1,8 +1,8 @@
 # Load balancing: multiple server nodes
 
-1. Création d'une branche `fb-load-balancing`
+1. Créer une branche `fb-load-balancing`
 
-2. Création du fichier `docker-compose.yml` avec comme contenu:
+2. Créer le fichier `docker-compose.yml` à la racine du projet avec comme contenu :
 
    ```
    version: '3'
@@ -58,14 +58,28 @@
        external: true
    ```
 
-3. Création d'un network docker avec la commande `docker network create web`
-
-4. Lancement du test avec la commande `docker-compose up -d --scale apache_static=4 --scale express_dynamic=4`. Cette commande va lancer 4 conteneur statique et 4 conteneur dynamique et les reverse proxy qui est géré par traefik. En allant sur la page  [du conteneur static](http://labo.res.ch/) on va avoir une alerte qui va nous indiquer sur quel serveur statique on est arrivé. Pour test le loadbalancing des nœud expresse il faut faire la commande 
+3. Créer un network Docker avec la commande :
 
    ```bash
-   docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_1 | sed -e 's/^/[-- 1 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_2 | sed -e 's/^/[-- 2 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_3 | sed -e 's/^/[-- 3 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_4 | sed -e 's/^/[-- 4 --]/'
+   $ docker network create web
    ```
 
-   Il faut remplacer les `teachingheigvdres2019labohttpinfra_express_dynamic_x` par le nom des conteneurs. Cela va afficher une ces informations qui vont se mettre a jour lorsque une requetes ajax est faites aux noeuds.
+4. Lancer un test avec la commande :
 
-   ![loadbalancing_express](images/loadbalancing_express.png)
+   ```bash
+   $ docker-compose up -d --scale apache_static=4 --scale express_dynamic=4
+   ```
+
+   Cette commande lance 4 conteneurs statiques, 4 conteneurs dynamiques et le reverse proxy géré par traefik. 
+
+   En se rendant sur la page du [conteneur statique](http://labo.res.ch/), nous allons obtenir une alerte qui va nous indiquer sur quel serveur statique nous sommes arrivé. Chaque pression sur la touche `F5` va, derrière les décors, nous faire migrer sur différents serveurs statiques. 
+
+   Pour tester le *load balancing* des nœuds express, nous pouvons utiliser la commande :
+
+   ```bash
+   $ docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_1 | sed -e 's/^/[-- 1 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_2 | sed -e 's/^/[-- 2 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_3 | sed -e 's/^/[-- 3 --]/' & docker logs -f --tail=30 teachingheigvdres2019labohttpinfra_express_dynamic_4 | sed -e 's/^/[-- 4 --]/'
+   ```
+
+   Ici, il faut remplacer le nom `teachingheigvdres2019labohttpinfra_express_dynamic_x` par le nom de chaque conteneur. Cela va afficher les informations suivantes, qui vont se mettre à jour à chaque  requête ajax faite aux nœuds.
+
+   ![loadbalancing_express](./images/loadbalancing_express.png)
