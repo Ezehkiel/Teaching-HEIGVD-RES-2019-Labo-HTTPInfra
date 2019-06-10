@@ -10,6 +10,6 @@
   ProxyPassReverse 'api/animals/' 'http://<?php print "$dynamic_app"?>/'
 
   ProxyPass '/' 'http://<?php print "$static_app"?>/'
-  ProxyPassReverse '/ 'http://<?php print "$static_app"?>/'
+  ProxyPassReverse '/' 'http://<?php print "$static_app"?>/'
 
 </VirtualHost>
